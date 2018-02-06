@@ -22,8 +22,10 @@ void ImageSymLoader::Load(const bimp::FilePath& res_path, float scale, bool asyn
 		return;
 	}
 	m_sym.SetImage(img);
-	sm::ivec2 sz = img->GetSize();
-	m_sym.SetRegion(sm::ivec2(0, 0), sz, sm::vec2(0, 0), 0, scale);
+
+	auto w = img->GetWidth();
+	auto h = img->GetHeight();
+	m_sym.SetRegion(sm::ivec2(0, 0), sm::ivec2(w, h), sm::vec2(0, 0), 0, scale);
 }
 
 }
