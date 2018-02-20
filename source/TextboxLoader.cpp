@@ -1,6 +1,6 @@
 #include "s2loader/TextboxLoader.h"
 
-#include <sprite2/Textbox.h>
+#include <painting2/Textbox.h>
 #include <simp/NodeLabel.h>
 #include <bs/FixedPointNum.h>
 #include <gum/trans_color.h>
@@ -10,7 +10,7 @@
 namespace s2loader
 {
 
-TextboxLoader::TextboxLoader(s2::Textbox& m_tb)
+TextboxLoader::TextboxLoader(pt2::Textbox& m_tb)
 	: m_tb(m_tb)
 {
 }
@@ -31,8 +31,8 @@ void TextboxLoader::LoadJson(const Json::Value& val)
 	m_tb.space_hori			= static_cast<float>(val["space_hori"].asDouble());
 	m_tb.space_vert			= static_cast<float>(val["space_vert"].asDouble());
 
-	m_tb.align_hori			= (s2::Textbox::HoriAlign)(val["align_hori"].asInt());
-	m_tb.align_vert			= (s2::Textbox::VertAlign)(val["align_vert"].asInt());
+	m_tb.align_hori			= (pt2::Textbox::HoriAlign)(val["align_hori"].asInt());
+	m_tb.align_vert			= (pt2::Textbox::VertAlign)(val["align_vert"].asInt());
 
 	m_tb.overflow			= true;
 	if (val.isMember("overflow")) {
@@ -58,8 +58,8 @@ void TextboxLoader::LoadBin(const simp::NodeLabel* node)
 	m_tb.edge_size  = node->edge_size;
 	m_tb.edge_color.FromRGBA(node->edge_color);
 
-	m_tb.align_hori = s2::Textbox::HoriAlign(node->align_hori);
-	m_tb.align_vert	= s2::Textbox::VertAlign(node->align_vert);
+	m_tb.align_hori = pt2::Textbox::HoriAlign(node->align_hori);
+	m_tb.align_vert	= pt2::Textbox::VertAlign(node->align_vert);
 
 	m_tb.space_hori = node->space_hori;
 	m_tb.space_vert = node->space_vert;

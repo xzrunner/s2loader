@@ -5,7 +5,7 @@
 
 #include <json/json.h>
 
-namespace s2 { class Textbox; }
+namespace pt2 { class Textbox; }
 namespace simp { class NodeLabel; }
 
 namespace s2loader
@@ -14,13 +14,13 @@ namespace s2loader
 class TextboxLoader : private cu::Uncopyable
 {
 public:
-	TextboxLoader(s2::Textbox& tb);
+	TextboxLoader(pt2::Textbox& tb);
 
 	void LoadJson(const Json::Value& val);
 	void LoadBin(const simp::NodeLabel* node);
 
 private:
-	s2::Textbox& m_tb;
+	pt2::Textbox& m_tb;
 
 }; // TextboxLoader
 
