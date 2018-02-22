@@ -7,8 +7,8 @@
 #include <shaderlab/ShaderMgr.h>
 #include <shaderlab/HeatHazeProg.h>
 #include <shaderlab/FilterShader.h>
+#include <stat/StatImages.h>
 #include <sprite2/Sprite.h>
-#include <sprite2/StatImages.h>
 #include <bs/FixedPointNum.h>
 #include <gum/FilepathHelper.h>
 #include <gum/trans_color.h>
@@ -579,7 +579,7 @@ void SpriteIO::LoadShader(const Json::Value& val, const CU_STR& dir)
 							prog = static_cast<sl::HeatHazeProg*>(shader->GetProgram(sl::FM_HEAT_HAZE));
 						}
 						if (prog) {
-							auto img = gum::ImagePool::Instance()->Create(s2::StatImages::UNKNOWN_IMG_ID, bimp::FilePath(filepath));
+							auto img = gum::ImagePool::Instance()->Create(st::StatImages::UNKNOWN_IMG_ID, bimp::FilePath(filepath));
 							prog->SetDistortionMapTex(img->GetTexID());
 						}
 					}
