@@ -3,7 +3,7 @@
 
 #include <SM_Vector.h>
 #include <polymesh/MeshTransform.h>
-#include <sprite2/Mesh.h>
+#include <painting2/Mesh.h>
 #include <gum/JsonSerializer.h>
 
 #include <queue>
@@ -17,7 +17,7 @@ namespace s2loader
 /* MeshTransform                                                        */
 /************************************************************************/
 
-void MeshIO::Load(const Json::Value& val, pm::MeshTransform& trans, const s2::Mesh& mesh)
+void MeshIO::Load(const Json::Value& val, pm::MeshTransform& trans, const pt2::Mesh<s2::Symbol>& mesh)
 {
 	if (val.isMember("trans"))
 	{
@@ -59,7 +59,7 @@ void MeshIO::Load(const Json::Value& val, pm::MeshTransform& trans, const s2::Me
 	}
 }
 
-void MeshIO::Store(Json::Value& val, const pm::MeshTransform& trans, const s2::Mesh& mesh)
+void MeshIO::Store(Json::Value& val, const pm::MeshTransform& trans, const pt2::Mesh<s2::Symbol>& mesh)
 {
 	Json::Value& trans_val = val["transform"];
 	const CU_VEC<std::pair<int, sm::vec2> >& t = trans.GetTrans();

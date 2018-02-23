@@ -10,8 +10,8 @@
 #include <polymesh/TrianglesMesh.h>
 #include <polymesh/Skin2Mesh.h>
 #include <polymesh/MeshTransform.h>
+#include <painting2/Mesh.h>
 #include <sprite2/MeshSymbol.h>
-#include <sprite2/Mesh.h>
 #include <bs/FixedPointNum.h>
 #include <gum/FilepathHelper.h>
 #include <gum/JsonSerializer.h>
@@ -51,7 +51,7 @@ void MeshSymLoader::LoadJson(const CU_STR& filepath)
 	}
 
 	CU_STR type = value["type"].asString().c_str();
-	std::unique_ptr<s2::Mesh> mesh;
+	std::unique_ptr<pt2::Mesh<s2::Symbol>> mesh;
 	if (type == "strip") {
 
 	} else if (type == "network" || type == "points") {
@@ -70,7 +70,7 @@ void MeshSymLoader::LoadBin(const simp::NodeMesh* node)
 		return;
 	}
 
-	std::unique_ptr<s2::Mesh> mesh = nullptr;
+	std::unique_ptr<pt2::Mesh<s2::Symbol>> mesh = nullptr;
 	switch (node->shape->type)
 	{
 	case simp::MESH_POINTS:
@@ -88,9 +88,9 @@ void MeshSymLoader::LoadBin(const simp::NodeMesh* node)
 	m_sym.SetMesh(mesh);
 }
 
-std::unique_ptr<s2::Mesh> MeshSymLoader::LoadPointsMesh(const s2::SymConstPtr& base_sym, simp::PointsMesh* node)
+std::unique_ptr<pt2::Mesh<s2::Symbol>> MeshSymLoader::LoadPointsMesh(const s2::SymConstPtr& base_sym, simp::PointsMesh* node)
 {
-	auto s2_mesh = std::make_unique<s2::Mesh>(base_sym);
+	auto s2_mesh = std::make_unique<pt2::Mesh<s2::Symbol>>(base_sym);
 	
 	CU_VEC<sm::vec2> outline;
 	ArrayLoader::Load(outline, node->outline, node->outline_n, 16);
@@ -105,9 +105,9 @@ std::unique_ptr<s2::Mesh> MeshSymLoader::LoadPointsMesh(const s2::SymConstPtr& b
 	return s2_mesh;
 }
 
-std::unique_ptr<s2::Mesh> MeshSymLoader::LoadTrianglesMesh(const s2::SymConstPtr& base_sym, simp::TrianglesMesh* node)
+std::unique_ptr<pt2::Mesh<s2::Symbol>> MeshSymLoader::LoadTrianglesMesh(const s2::SymConstPtr& base_sym, simp::TrianglesMesh* node)
 {
-	auto s2_mesh = std::make_unique<s2::Mesh>(base_sym);
+	auto s2_mesh = std::make_unique<pt2::Mesh<s2::Symbol>>(base_sym);
 
 	CU_VEC<sm::vec2> vertices;
 	ArrayLoader::Load(vertices, node->vertices, node->vertices_n, 16);
@@ -124,9 +124,9 @@ std::unique_ptr<s2::Mesh> MeshSymLoader::LoadTrianglesMesh(const s2::SymConstPtr
 	return s2_mesh;
 }
 
-std::unique_ptr<s2::Mesh> MeshSymLoader::LoadSkin2Mesh(const s2::SymConstPtr& base_sym, simp::Skin2Mesh* node)
+std::unique_ptr<pt2::Mesh<s2::Symbol>> MeshSymLoader::LoadSkin2Mesh(const s2::SymConstPtr& base_sym, simp::Skin2Mesh* node)
 {
-	auto s2_mesh = std::make_unique<s2::Mesh>(base_sym);
+	auto s2_mesh = std::make_unique<pt2::Mesh<s2::Symbol>>(base_sym);
 
 	CU_VEC<pm::Skin2Joint> joints;
 	int joints_n = 0;
@@ -164,9 +164,9 @@ std::unique_ptr<s2::Mesh> MeshSymLoader::LoadSkin2Mesh(const s2::SymConstPtr& ba
 	return s2_mesh;
 }
 
-std::unique_ptr<s2::Mesh> MeshSymLoader::CreatePointsMesh(const Json::Value& val, const s2::SymConstPtr& base_sym)
+std::unique_ptr<pt2::Mesh<s2::Symbol>> MeshSymLoader::CreatePointsMesh(const Json::Value& val, const s2::SymConstPtr& base_sym)
 {
-	auto s2_mesh = std::make_unique<s2::Mesh>(base_sym);
+	auto s2_mesh = std::make_unique<pt2::Mesh<s2::Symbol>>(base_sym);
 
 	CU_VEC<sm::vec2> outline;
 	 gum::JsonSerializer::Load(val["shape"]["outline"], outline);

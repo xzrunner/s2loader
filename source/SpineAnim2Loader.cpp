@@ -7,10 +7,10 @@
 #include <rigging.h>
 #include <polymesh/TrianglesMesh.h>
 #include <polymesh/Skin2Mesh.h>
+#include <painting2/Mesh.h>
 #include <sprite2/Anim2Symbol.h>
 #include <sprite2/Sprite.h>
 #include <sprite2/MeshSymbol.h>
-#include <sprite2/Mesh.h>
 #include <sprite2/ImageSymbol.h>
 #include <gum/FilepathHelper.h>
 
@@ -288,7 +288,7 @@ void SpineAnim2Loader::CreateMeshSkin(rg_skin& dst, const SpineParser::SkinItem&
 	}
 	
 	auto sym = m_sym_loader->Create(s2::SYM_MESH);
-	auto s2_mesh = std::make_unique<s2::Mesh>(base_sym);
+	auto s2_mesh = std::make_unique<pt2::Mesh<s2::Symbol>>(base_sym);
 	s2_mesh->SetMesh(std::move(pm_mesh));
 	S2_VI_PTR_DOWN_CAST<s2::MeshSymbol>(sym)->SetMesh(s2_mesh);
 

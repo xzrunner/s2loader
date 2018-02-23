@@ -2,7 +2,7 @@
 #include "s2loader/MeshSymLoader.h"
 #include "s2loader/MeshIO.h"
 
-#include <sprite2/Mesh.h>
+#include <painting2/Mesh.h>
 #include <sprite2/MeshSprite.h>
 #include <sprite2/MeshSymbol.h>
 #include <simp/NodeMeshSpr.h>

@@ -2,6 +2,7 @@
 #define _S2LOADER_MESH_SYM_LOADER_H_
 
 #include <cu/uncopyable.h>
+#include <painting2/Mesh.h>
 #include <sprite2/typedef.h>
 #include <cu/cu_stl.h>
 
@@ -22,11 +23,11 @@ public:
 	void LoadBin(const simp::NodeMesh* node);
 
 private:
-	static std::unique_ptr<s2::Mesh> LoadPointsMesh(const s2::SymConstPtr& base_sym, simp::PointsMesh* mesh);
-	static std::unique_ptr<s2::Mesh> LoadTrianglesMesh(const s2::SymConstPtr& base_sym, simp::TrianglesMesh* mesh);
-	static std::unique_ptr<s2::Mesh> LoadSkin2Mesh(const s2::SymConstPtr& base_sym, simp::Skin2Mesh* mesh);
+	static std::unique_ptr<pt2::Mesh<s2::Symbol>> LoadPointsMesh(const s2::SymConstPtr& base_sym, simp::PointsMesh* mesh);
+	static std::unique_ptr<pt2::Mesh<s2::Symbol>> LoadTrianglesMesh(const s2::SymConstPtr& base_sym, simp::TrianglesMesh* mesh);
+	static std::unique_ptr<pt2::Mesh<s2::Symbol>> LoadSkin2Mesh(const s2::SymConstPtr& base_sym, simp::Skin2Mesh* mesh);
 
-	static std::unique_ptr<s2::Mesh> CreatePointsMesh(const Json::Value& val, const s2::SymConstPtr& base_sym);
+	static std::unique_ptr<pt2::Mesh<s2::Symbol>> CreatePointsMesh(const Json::Value& val, const s2::SymConstPtr& base_sym);
 
 private:
 	s2::MeshSymbol& m_sym;
