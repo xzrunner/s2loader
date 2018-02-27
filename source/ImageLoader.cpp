@@ -8,6 +8,8 @@
 #include <timp/TextureFormat.h>
 #include <timp/TextureLoader.h>
 #include <unirender/RenderContext.h>
+#include <shaderlab/Blackboard.h>
+#include <shaderlab/ShaderMgr.h>
 #include <fs_file.h>
 #include <gum/RenderContext.h>
 #include <gum/Config.h>
@@ -46,15 +48,16 @@ bool ImageLoader::AsyncLoad(int format, int width, int height, const std::shared
 		return false;
 	}
 
+	ur::RenderContext& ur_rc = sl::Blackboard::Instance()->GetShaderMgr()->GetContext();
+
 	int real_fmt = format;
 	if (real_fmt == timp::TEXTURE_ETC2) {
-		ur::RenderContext* rc = gum::RenderContext::Instance()->GetImpl();
-		if (!rc->IsSupportETC2()) {
+		if (!ur_rc.IsSupportETC2()) {
 			real_fmt = timp::TEXTURE_RGBA4;
 		}
 	}
 
-	m_id = gum::RenderContext::Instance()->GetImpl()->CreateTextureID(width, height, real_fmt);
+	m_id = ur_rc.CreateTextureID(width, height, real_fmt);
 	m_format = format;
 	m_width = width;
 	m_height = height;
@@ -96,7 +99,8 @@ bool ImageLoader::LoadRaw()
 	}
 
 	m_format = tf;
-	m_id = gum::RenderContext::Instance()->GetImpl()->CreateTexture(pixels, w, h, tf);
+	ur::RenderContext& ur_rc = sl::Blackboard::Instance()->GetShaderMgr()->GetContext();
+	m_id = ur_rc.CreateTexture(pixels, w, h, tf);
 	free(pixels);
 
 	return true;
@@ -130,7 +134,7 @@ bool ImageLoader::LoadBin(const timp::TextureLoader& loader)
 	switch (m_format)
 	{
 	case timp::TEXTURE_RGBA4: case timp::TEXTURE_RGBA8:
-		m_id = gum::RenderContext::Instance()->GetImpl()->CreateTexture(static_cast<const uint8_t*>(loader.GetData()), m_width, m_height, m_format);
+		m_id = sl::Blackboard::Instance()->GetShaderMgr()->GetContext().CreateTexture(static_cast<const uint8_t*>(loader.GetData()), m_width, m_height, m_format);
 		break;
 	case timp::TEXTURE_PVR2:
 		ret = DecodePVR2(loader.GetData());
@@ -171,7 +175,8 @@ bool ImageLoader::DecodePVR4(const void* data)
 	uint8_t* rgba8 = gimg_pvr_decode_rgba8(static_cast<const uint8_t*>(data), m_width, m_height);
 	uint8_t* rgba4 = gimg_rgba8_to_rgba4_dither(rgba8, m_width, m_height);
 	gimg_revert_y((uint8_t*)rgba4, m_width, m_height, GPF_RGBA4);
-	m_id = gum::RenderContext::Instance()->GetImpl()->CreateTexture(rgba4, m_width, m_height, timp::TEXTURE_RGBA8);
+	ur::RenderContext& ur_rc = sl::Blackboard::Instance()->GetShaderMgr()->GetContext();
+	m_id = ur_rc.CreateTexture(rgba4, m_width, m_height, timp::TEXTURE_RGBA8);
 	free(rgba4);
 	free(rgba8);
 #endif
@@ -180,13 +185,13 @@ bool ImageLoader::DecodePVR4(const void* data)
 
 bool ImageLoader::DecodeETC2(const void* data)
 {
-	ur::RenderContext* rc = gum::RenderContext::Instance()->GetImpl();
-	if (rc->IsSupportETC2()) {
-		m_id = rc->CreateTexture(data, m_width, m_height, timp::TEXTURE_ETC2);
+	ur::RenderContext& ur_rc = sl::Blackboard::Instance()->GetShaderMgr()->GetContext();
+	if (ur_rc.IsSupportETC2()) {
+		m_id = ur_rc.CreateTexture(data, m_width, m_height, timp::TEXTURE_ETC2);
 	} else {
 		uint8_t* rgba8 = gimg_etc2_decode_rgba8(static_cast<const uint8_t*>(data), m_width, m_height, ETC2PACKAGE_RGBA_NO_MIPMAPS);
 		uint8_t* rgba4 = gimg_rgba8_to_rgba4_dither(rgba8, m_width, m_height);
-		m_id = rc->CreateTexture(rgba4, m_width, m_height, timp::TEXTURE_RGBA4);
+		m_id = ur_rc.CreateTexture(rgba4, m_width, m_height, timp::TEXTURE_RGBA4);
 		free(rgba4);
 		free(rgba8);
 	}

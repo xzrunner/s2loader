@@ -4,6 +4,7 @@
 #include "s2loader/FastBlendModes.h"
 #include "s2loader/FilterModes.h"
 
+#include <shaderlab/Blackboard.h>
 #include <shaderlab/ShaderMgr.h>
 #include <shaderlab/HeatHazeProg.h>
 #include <shaderlab/FilterShader.h>
@@ -573,7 +574,7 @@ void SpriteIO::LoadShader(const Json::Value& val, const CU_STR& dir)
 						filter->SetFilepath(filepath);
 						
 						sl::HeatHazeProg* prog = nullptr;
-						sl::ShaderMgr* mgr = sl::ShaderMgr::Instance();
+						sl::ShaderMgr* mgr = sl::Blackboard::Instance()->GetShaderMgr();
 						sl::FilterShader* shader = static_cast<sl::FilterShader*>(mgr->GetShader(sl::FILTER));
 						if (shader) {
 							prog = static_cast<sl::HeatHazeProg*>(shader->GetProgram(sl::FM_HEAT_HAZE));
