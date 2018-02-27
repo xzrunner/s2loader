@@ -6,6 +6,7 @@
 
 #include <shaderlab/Blackboard.h>
 #include <shaderlab/ShaderMgr.h>
+#include <shaderlab/RenderContext.h>
 #include <shaderlab/HeatHazeProg.h>
 #include <shaderlab/FilterShader.h>
 #include <stat/StatImages.h>
@@ -574,8 +575,8 @@ void SpriteIO::LoadShader(const Json::Value& val, const CU_STR& dir)
 						filter->SetFilepath(filepath);
 						
 						sl::HeatHazeProg* prog = nullptr;
-						sl::ShaderMgr* mgr = sl::Blackboard::Instance()->GetShaderMgr();
-						sl::FilterShader* shader = static_cast<sl::FilterShader*>(mgr->GetShader(sl::FILTER));
+						auto& shader_mgr = sl::Blackboard::Instance()->GetRenderContext().GetShaderMgr();
+						sl::FilterShader* shader = static_cast<sl::FilterShader*>(shader_mgr.GetShader(sl::FILTER));
 						if (shader) {
 							prog = static_cast<sl::HeatHazeProg*>(shader->GetProgram(sl::FM_HEAT_HAZE));
 						}

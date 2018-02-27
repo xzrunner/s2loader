@@ -11,6 +11,7 @@
 #include <unirender/RenderContext.h>
 #include <shaderlab/Blackboard.h>
 #include <shaderlab/ShaderMgr.h>
+#include <shaderlab/RenderContext.h>
 #include <fs_file.h>
 #include <gum/RenderContext.h>
 #include <gum/Image.h>
@@ -98,7 +99,10 @@ void LoadImageTask::Flush()
 	switch (format)
 	{
 	case timp::TEXTURE_RGBA4: case timp::TEXTURE_RGBA8:
-		sl::Blackboard::Instance()->GetShaderMgr()->GetContext().UpdateTexture(m_img->GetTexID(), pixels, width, height);
+		{
+			auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
+			ur_rc.UpdateTexture(m_img->GetTexID(), pixels, width, height);
+		}
 		break;
 	case timp::TEXTURE_PVR2:
 #if defined( __APPLE__ ) && !defined(__MACOSX)
@@ -113,7 +117,7 @@ void LoadImageTask::Flush()
 			uint8_t* rgba8 = gimg_pvr_decode_rgba8(static_cast<const uint8_t*>(pixels), width, height);
 			uint8_t* rgba4 = gimg_rgba8_to_rgba4_dither(rgba8, width, height);
 			gimg_revert_y((uint8_t*)rgba4, width, height, GPF_RGBA4);
-			ur::RenderContext& ur_rc = sl::Blackboard::Instance()->GetShaderMgr()->GetContext();
+			auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
 			ur_rc.UpdateTexture(m_img->GetTexID(), rgba4, width, height);
 			free(rgba4);
 			free(rgba8);
@@ -124,7 +128,7 @@ void LoadImageTask::Flush()
 		break;
 	case timp::TEXTURE_ETC2:
 		{
-			ur::RenderContext& ur_rc = sl::Blackboard::Instance()->GetShaderMgr()->GetContext();
+			auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
 			if (ur_rc.IsSupportETC2()) {
 				ur_rc.UpdateTexture(m_img->GetTexID(), pixels, width, height);
 			} else {
