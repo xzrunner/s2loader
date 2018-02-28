@@ -8,6 +8,7 @@
 #include <timp/TextureFormat.h>
 #include <timp/TextureLoader.h>
 #include <unirender/RenderContext.h>
+#include <unirender/Blackboard.h>
 #include <shaderlab/Blackboard.h>
 #include <shaderlab/ShaderMgr.h>
 #include <shaderlab/RenderContext.h>
@@ -49,7 +50,7 @@ bool ImageLoader::AsyncLoad(int format, int width, int height, const std::shared
 		return false;
 	}
 
-	auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
+	auto& ur_rc = ur::Blackboard::Instance()->GetRenderContext();
 
 	int real_fmt = format;
 	if (real_fmt == timp::TEXTURE_ETC2) {
@@ -100,7 +101,7 @@ bool ImageLoader::LoadRaw()
 	}
 
 	m_format = tf;
-	auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
+	auto& ur_rc = ur::Blackboard::Instance()->GetRenderContext();
 	m_id = ur_rc.CreateTexture(pixels, w, h, tf);
 	free(pixels);
 
@@ -136,7 +137,7 @@ bool ImageLoader::LoadBin(const timp::TextureLoader& loader)
 	{
 	case timp::TEXTURE_RGBA4: case timp::TEXTURE_RGBA8:
 		{
-			auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
+			auto& ur_rc = ur::Blackboard::Instance()->GetRenderContext();
 			m_id = ur_rc.CreateTexture(static_cast<const uint8_t*>(loader.GetData()), m_width, m_height, m_format);
 		}
 		break;
@@ -179,7 +180,7 @@ bool ImageLoader::DecodePVR4(const void* data)
 	uint8_t* rgba8 = gimg_pvr_decode_rgba8(static_cast<const uint8_t*>(data), m_width, m_height);
 	uint8_t* rgba4 = gimg_rgba8_to_rgba4_dither(rgba8, m_width, m_height);
 	gimg_revert_y((uint8_t*)rgba4, m_width, m_height, GPF_RGBA4);
-	auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
+	auto& ur_rc = ur::Blackboard::Instance()->GetRenderContext();
 	m_id = ur_rc.CreateTexture(rgba4, m_width, m_height, timp::TEXTURE_RGBA8);
 	free(rgba4);
 	free(rgba8);
@@ -189,7 +190,7 @@ bool ImageLoader::DecodePVR4(const void* data)
 
 bool ImageLoader::DecodeETC2(const void* data)
 {
-	auto& ur_rc = sl::Blackboard::Instance()->GetRenderContext().GetContext();
+	auto& ur_rc = ur::Blackboard::Instance()->GetRenderContext();
 	if (ur_rc.IsSupportETC2()) {
 		m_id = ur_rc.CreateTexture(data, m_width, m_height, timp::TEXTURE_ETC2);
 	} else {
