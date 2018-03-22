@@ -18,10 +18,10 @@ GlyphStyle::GlyphStyle()
 GlyphStyle::GlyphStyle(const gtxt_glyph_style* gs)
 	: font(gs->font)
 	, font_size(gs->font_size)
-	, font_color(gs->font_color.integer)
+	, font_color(gs->font_color.mode.ONE.color.integer)
 	, edge(gs->edge)
 	, edge_size(static_cast<int>(gs->edge_size))
-	, edge_color(gs->edge_color.integer)
+	, edge_color(gs->edge_color.mode.ONE.color.integer)
 {}
 
 bool GlyphStyle::operator == (const GlyphStyle& style) const
