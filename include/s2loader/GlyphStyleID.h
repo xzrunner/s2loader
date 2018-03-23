@@ -17,7 +17,8 @@ public:
 	int Gen(const GlyphStyle& style);
 
 private:
-	static int Hash(const GlyphStyle& style);
+	static size_t Hash(const GlyphStyle& style);
+	static void HashColor(size_t& seed, const pt2::GradientColor& color);
 
 private:
 	static const int HASH_CAP = 197;

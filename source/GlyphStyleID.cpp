@@ -1,5 +1,7 @@
 #include "s2loader/GlyphStyleID.h"
 
+#include <boost/functional/hash.hpp>
+
 namespace s2loader
 {
 
@@ -35,27 +37,40 @@ int GlyphStyleID::Gen(const GlyphStyle& style)
 	return id;
 }
 
-int GlyphStyleID::Hash(const GlyphStyle& gs)
+size_t GlyphStyleID::Hash(const GlyphStyle& gs)
 {
-	int hash = 0;
-	int seed = 31;
-
-	hash = hash * seed + gs.font;
-	hash = hash * seed + gs.font_size;
-	hash = hash * seed + (gs.font_color >> 24) & 0xff;
-	hash = hash * seed + (gs.font_color >> 16) & 0xff;
-	hash = hash * seed + (gs.font_color >> 8) & 0xff;
-	hash = hash * seed + (gs.font_color) & 0xff;	
-	if (gs.edge) 
+	size_t hash = 0;
+	boost::hash_combine(hash, gs.font);
+	boost::hash_combine(hash, gs.font_size);
+	boost::hash_combine(hash, gs.font);
+	HashColor(hash, gs.font_color);
+	boost::hash_combine(hash, gs.edge);
+	if (gs.edge)
 	{
-		hash = hash * seed + gs.edge;
-		hash = hash * seed + gs.edge_size;
-		hash = hash * seed + (gs.edge_color >> 24) & 0xff;
-		hash = hash * seed + (gs.edge_color >> 16) & 0xff;
-		hash = hash * seed + (gs.edge_color >> 8) & 0xff;
-		hash = hash * seed + (gs.edge_color) & 0xff;
+		boost::hash_combine(hash, gs.edge_size);
+		HashColor(hash, gs.edge_color);
 	}
 	return hash;
+}
+
+void GlyphStyleID::HashColor(size_t& seed, const pt2::GradientColor& color)
+{
+	if (color.items.empty()) {
+		return;
+	}
+	if (color.items.size() == 1) 
+	{
+		boost::hash_combine(seed, color.items[0].col.ToRGBA());
+	}
+	else
+	{
+		boost::hash_combine(seed, color.angle);
+		boost::hash_combine(seed, color.items.size());
+		for (auto& item : color.items) {
+			boost::hash_combine(seed, item.col.ToRGBA());
+			boost::hash_combine(seed, item.pos);
+		}
+	}
 }
 
 }
