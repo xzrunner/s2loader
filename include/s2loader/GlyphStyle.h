@@ -1,6 +1,8 @@
 #ifndef _S2LOADER_GLYPH_STYLE_H_
 #define _S2LOADER_GLYPH_STYLE_H_
 
+#include <painting2/GradientColor.h>
+
 #include <stdint.h>
 
 struct gtxt_glyph_style;
@@ -11,13 +13,13 @@ namespace s2loader
 class GlyphStyle
 {
 public:
-	int      font;
-	int      font_size;
-	uint32_t font_color;
+	int font;
+	int font_size;
+	pt2::GradientColor font_color;
 
-	int      edge;
-	int      edge_size;
-	uint32_t edge_color;
+	int edge;
+	int edge_size;
+	pt2::GradientColor edge_color;
 
 public:
 	GlyphStyle();
