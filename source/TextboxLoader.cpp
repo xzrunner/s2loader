@@ -22,11 +22,13 @@ void TextboxLoader::LoadJson(const Json::Value& val)
 
 	m_tb.font_type			= val["font"].asInt();
 	m_tb.font_size			= val["font_size"].asInt();
-	m_tb.font_color			= gum::str2color(val["font_color"].asString().c_str(), s2s::RGBA);
+	m_tb.font_color.items.resize(1);
+	m_tb.font_color.items[0].col = gum::str2color(val["font_color"].asString().c_str(), s2s::RGBA);
 
 	m_tb.has_edge			= val["edge"].asBool();
 	m_tb.edge_size			= static_cast<float>(val["edge_size"].asDouble());
-	m_tb.edge_color			= gum::str2color(val["edge_color"].asString().c_str(), s2s::RGBA);
+	m_tb.edge_color.items.resize(1);
+	m_tb.edge_color.items[0].col = gum::str2color(val["edge_color"].asString().c_str(), s2s::RGBA);
 
 	m_tb.space_hori			= static_cast<float>(val["space_hori"].asDouble());
 	m_tb.space_vert			= static_cast<float>(val["space_vert"].asDouble());
@@ -52,11 +54,13 @@ void TextboxLoader::LoadBin(const simp::NodeLabel* node)
 
 	m_tb.font_type  = node->font;
 	m_tb.font_size  = node->font_size;
-	m_tb.font_color.FromRGBA(node->font_color);
+	m_tb.font_color.items.resize(1);
+	m_tb.font_color.items[0].col.FromRGBA(node->font_color);
 
 	m_tb.has_edge   = bs::int2bool(node->edge);
 	m_tb.edge_size  = node->edge_size;
-	m_tb.edge_color.FromRGBA(node->edge_color);
+	m_tb.edge_color.items.resize(1);
+	m_tb.edge_color.items[0].col.FromRGBA(node->edge_color);
 
 	m_tb.align_hori = pt2::Textbox::HoriAlign(node->align_hori);
 	m_tb.align_vert	= pt2::Textbox::VertAlign(node->align_vert);
